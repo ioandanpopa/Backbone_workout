@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Model Examples</title>
+</head>
+
+<body>
+    <script>
+
+        // Declaration case 1
+        var UserModel = new BackBone.Model.extend({
+            initialize: function () {
+                alert("A new user has been created");
+            }
+        });
+
+        // Declaration case 2 with defaults
+        var UserModel = new BackBone.Model.extend({
+            defaults: {
+                firstname: 'not specified',
+                lastname: 'not specified',
+                age: 'not specified'
+            },
+            initialize: function () {
+                alert("A new user has been created");
+            }
+        });
+
+        // Declaration case 3 with defaults and listening event
+        var UserModel = new BackBone.Model.extend({
+            defaults: {
+                firstname: 'not specified',
+                lastname: 'not specified',
+                age: 'not specified'
+            },
+            initialize: function () {
+                alert("A new user has been created");
+                this.on("change:age", function (model) {
+                    var firstname = model.get("firstname");
+                    alert("It's the Birthday of " + firstname);
+                });
+            }
+        });
+
+        // Declaration case 4 with defaults and server interaction
+        var UserModel = new BackBone.Model.extend({
+            rootUrl: '/user',
+            defaults: {
+                firstname: 'not specified',
+                lastname: 'not specified',
+                age: 'not specified'
+            }
+        });
+
+        // Initialize case 1 works for both declarations
+        var userModel = new UserModel({ firstname: "Emil", lastname: "Buta", age: 65 });
+
+        // Initialize case 2 works for both declarations
+        var userModel = new UserModel();
+        userModel.set({ firstname: "Emil", lastname: "Buta", age: 65 });
+
+        // Trigger event
+        var userModel = new UserModel({ firstname: "Emil", lastname: "Buta", age: 65 });
+        userModel.set({ age: 66 });
+
+        // Saving a new user on the server
+        var userDetails = {
+            firstname: "Emil",
+            lastname: "Buta",
+            age: 65
+        };
+
+        userModel.save(userDetails, {
+            success: function(user) {
+                var id = user.get("id");
+                alert("The id of the new user is " + id);
+            }
+        });
+
+        //Retrieve a user model based on an id
+        var userModel = new UserModel({ id: 1 });
+
+        userModel.fetch({
+            success: function (user) {
+                var firstname = user.get("firstname");
+                alert("Id belogs to user " + firstname);
+            }
+        });
+
+    </script>
+</body>
+</html>
